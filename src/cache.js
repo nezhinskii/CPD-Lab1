@@ -18,7 +18,11 @@ class Cache{
      */
     get(key) {
         const entry = this.storage.get(key);
-        if (!entry || entry.count <= 0) {
+        if (!entry) {
+            return null;
+        }
+        if (entry.count <= 0) {
+            this.storage.delete(key);
             return null;
         }
         entry.count -= 1;
@@ -32,9 +36,9 @@ class Cache{
      */
     stats() {
         const stats = [];
-        for (let [key, { value, count }] of this.storage.entries()) {
-            stats.push({ key, value, count });
-        }
+        this.storage.forEach((value, key) => {
+            stats.push({ key: key, value: value.value, count: value.count });
+        });
         return stats;
     }
 }
